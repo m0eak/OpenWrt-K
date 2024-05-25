@@ -6,21 +6,27 @@ sed -i 's/^  DEPENDS:= +kmod-crypto-manager +kmod-crypto-pcbc +kmod-crypto-fcryp
 sed -i 's/^	dnsmasq \\$/	dnsmasq-full \\/g' ./include/target.mk
 sed -i 's/^	b43-fwsquash.py "$(CONFIG_B43_FW_SQUASH_PHYTYPES)" "$(CONFIG_B43_FW_SQUASH_COREREVS)"/	$(TOPDIR)\/tools\/b43-tools\/files\/b43-fwsquash.py "$(CONFIG_B43_FW_SQUASH_PHYTYPES)" "$(CONFIG_B43_FW_SQUASH_COREREVS)"/' ./package/kernel/mac80211/broadcom.mk
 # 固定Vermagic
-if grep -q "x86_64" $GITHUB_WORKSPACE/config/"$config"/OpenWrt-K/target.config; then
-  echo "当前分支：$openwrt_tag_branch_v"
+if grep -q "x86_64" $GITHUB_WORKSPACE/config/"$config"/target.config; then
+  echo "固定Vermagic"
   wget https://downloads.openwrt.org/releases/$openwrt_tag_branch_v/targets/x86/64/openwrt-$openwrt_tag_branch_v-x86-64.manifest
   grep kernel openwrt-*-x86-64.manifest | awk '{print $3}' | awk -F- '{print $3}' > vermagic
+  echo "当前Vermagic:"
   cat vermagic
   sed -i '121s|^|# |' ./include/kernel-defaults.mk
   sed -i $'121a\\\tcp $(TOPDIR)/vermagic $(LINUX_DIR)/.vermagic\\' ./include/kernel-defaults.mk
+  echo "固定Vermagic完成"
+  
 fi
-if grep -q "mediatek_filogic" $GITHUB_WORKSPACE/config/"$config"/OpenWrt-K/target.config; then
-  echo "当前分支：$openwrt_tag_branch_v"
+if grep -q "mediatek_filogic" $GITHUB_WORKSPACE/config/"$config"/target.config; then
+  echo "固定Vermagic"
   wget https://mirror-03.infra.openwrt.org/releases/$openwrt_tag_branch_v/targets/mediatek/filogic/openwrt-$openwrt_tag_branch_v-mediatek-filogic.manifest
   grep kernel openwrt-*-mediatek-filogic.manifest | awk '{print $3}' | awk -F- '{print $3}' > vermagic
+  echo "当前Vermagic:"
   cat vermagic
   sed -i '121s|^|# |' ./include/kernel-defaults.mk
   sed -i $'121a\\\tcp $(TOPDIR)/vermagic $(LINUX_DIR)/.vermagic\\' ./include/kernel-defaults.mk
+  echo "固定Vermagic完成"
+  
 fi
 # https://github.com/openwrt/packages/pull/22251
 if [[ "$openwrt_tag_branch" == "v23.05.0-rc4" ]] ; then
