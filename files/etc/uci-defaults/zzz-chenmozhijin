@@ -312,11 +312,30 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-openclash")" -ne '0
   uci add_list openclash.@rule_provider_config[-1].rule_name='代理规则(by 沉默の金)'
   uci commit openclash
 fi
+if [ "$( opkg list-installed 2>/dev/null| grep -c "^mosdns")" -ne '0' ];then
+  uci set mosdns.config.enabled='1'
+  uci set mosdns.config.redirect='1'
+  uci set mosdns.config.custom_local_dns='1'
+  uci set mosdns.config.enable_http3_local='0'
+  uci set mosdns.config.dns_leak='1'
+  uci add_list mosdns.config.local_dns='https://dns.alidns.com/dns-query'
+  uci add_list mosdns.config.local_dns='https://doh.pub/dns-query'
+  uci add_list mosdns.config.local_dns='https://doh.360.cn/dns-query'
+  uci add_list mosdns.config.remote_dns='https://doh.opendns.com/dns-query'
+  uci add_list mosdns.config.remote_dns='https://dns.google/dns-query'
+  uci add_list mosdns.config.remote_dns='https://dns.cloudflare.com/dns-query'
+  uci add_list mosdns.config.remote_dns='https://dns.quad9.net/dns-query'
+  uci commit mosdns
+fi
 echo "0 2 * * * /usr/share/cmzj/openwrt-k_tool.sh update rules" >>/etc/crontabs/root
 ln -s /usr/share/cmzj/openwrt-k_tool.sh /bin/openwrt-k
 chmod +x /usr/share/cmzj/openwrt-k_tool.sh
 uci commit
 /etc/init.d/sing-box stop
 /etc/init.d/sing-box disable
+sed -i "s/option rollback '90'/option rollback '30'/" /etc/config/luci
+sed -i "s/option holdoff '4'/option holdoff '2'/" /etc/config/luci
+sed -i "s/option timeout '5'/option timeout '3'/" /etc/config/luci
+sed -i "s/option display '1.5'/option display '1'/" /etc/config/luci
 exit 0
 
