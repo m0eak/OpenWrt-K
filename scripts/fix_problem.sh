@@ -17,7 +17,6 @@ if grep -q "x86_64" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   sed -i '121s|^|# |' ./include/kernel-defaults.mk
   sed -i $'121a\\\tcp $(TOPDIR)/vermagic $(LINUX_DIR)/.vermagic\\' ./include/kernel-defaults.mk
   echo "固定Vermagic完成"
-  
 fi
 if grep -q "mediatek_filogic" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   echo "固定Vermagic"
@@ -28,7 +27,12 @@ if grep -q "mediatek_filogic" $GITHUB_WORKSPACE/config/"$config"/target.config; 
   sed -i '121s|^|# |' ./include/kernel-defaults.mk
   sed -i $'121a\\\tcp $(TOPDIR)/vermagic $(LINUX_DIR)/.vermagic\\' ./include/kernel-defaults.mk
   echo "固定Vermagic完成"
-  
+fi
+# gl-mt3000打风扇Patch
+if grep -q "gl-mt3000" $GITHUB_WORKSPACE/config/"$config"/target.config; then
+  wget https://raw.githubusercontent.com/m0eak/openwrt_patch/main/mt3000/980-dts-mt7921-add-cooling-levels.patch 
+  mv 980-dts-mt7921-add-cooling-levels.patch ./target/linux/mediatek/patches-5.15/980-dts-mt7921-add-cooling-levels.patch 
+  echo "Patch Done"
 fi
 # https://github.com/openwrt/packages/pull/22251
 if [[ "$openwrt_tag_branch" == "v23.05.0-rc4" ]] ; then
