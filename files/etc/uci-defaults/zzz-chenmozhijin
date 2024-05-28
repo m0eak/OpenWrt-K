@@ -240,7 +240,7 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^dnsmasq")" -ne '0' ];then
   uci commit dhcp
   /etc/init.d/dnsmasq restart
 fi
-if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-openclash")" -ne '0' ] && ( [ "$(uci show openclash|grep -c ".port='1745'")" -ne '2' ] || [ "$(uci show openclash|grep -c ".port='5335'")" -ne '8' ] );then
+if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-openclash")" -ne '0' ] && [ "$(uci show openclash|grep -c ".port='1745'")" -ne '2' ];then
   if [ "$(grep -c "^代理规则(by 沉默の金)" /usr/share/openclash/res/rule_providers.list)" -eq '0' ];then
       sed -i '1i 代理规则(by 沉默の金),沉默の金,classical,chenmozhijin/OpenWrt-K/main/files/etc/openclash/rule_provider/,ProxyRule-chenmozhijin.yaml' "/usr/share/openclash/res/rule_providers.list"
   fi
@@ -265,63 +265,6 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-openclash")" -ne '0
     uci set openclash.@dns_servers[-1].type='udp'
     uci set openclash.@dns_servers[-1].ip='127.0.0.1'
     uci set openclash.@dns_servers[-1].port='1745'
-    uci set openclash.config.enable_custom_dns='1'
-  fi
-  if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-mosdns")" -ne '0' ];then
-    n=0
-    while [ "$n" -lt $(uci show openclash|grep -c "^openclash.@dns_servers\[[0-9]\{1,10\}\]=dns_servers") ]; do
-      uci set openclash.@dns_servers[$n].enabled='0'
-      n=$((n + 1))
-    done
-    uci add openclash dns_servers
-    uci set openclash.@dns_servers[-1].enabled='1'
-    uci set openclash.@dns_servers[-1].group='nameserver'
-    uci set openclash.@dns_servers[-1].type='udp'
-    uci set openclash.@dns_servers[-1].ip='127.0.0.1'
-    uci set openclash.@dns_servers[-1].port='5335'
-    uci add openclash dns_servers
-    uci set openclash.@dns_servers[-1].enabled='1'
-    uci set openclash.@dns_servers[-1].group='fallback'
-    uci set openclash.@dns_servers[-1].type='udp'
-    uci set openclash.@dns_servers[-1].ip='127.0.0.1'
-    uci set openclash.@dns_servers[-1].port='5335'
-    uci add openclash dns_servers
-    uci set openclash.@dns_servers[-2].enabled='1'
-    uci set openclash.@dns_servers[-2].group='nameserver'
-    uci set openclash.@dns_servers[-2].type='tcp'
-    uci set openclash.@dns_servers[-2].ip='127.0.0.1'
-    uci set openclash.@dns_servers[-2].port='5335'
-    uci add openclash dns_servers
-    uci set openclash.@dns_servers[-2].enabled='1'
-    uci set openclash.@dns_servers[-2].group='fallback'
-    uci set openclash.@dns_servers[-2].type='tcp'
-    uci set openclash.@dns_servers[-2].ip='127.0.0.1'
-    uci set openclash.@dns_servers[-2].port='5335'
-    uci add openclash dns_servers
-    uci set openclash.@dns_servers[-3].enabled='1'
-    uci set openclash.@dns_servers[-3].group='nameserver'
-    uci set openclash.@dns_servers[-3].type='tls'
-    uci set openclash.@dns_servers[-3].ip='127.0.0.1'
-    uci set openclash.@dns_servers[-3].port='5335'
-    uci add openclash dns_servers
-    uci set openclash.@dns_servers[-3].enabled='1'
-    uci set openclash.@dns_servers[-3].group='fallback'
-    uci set openclash.@dns_servers[-3].type='tls'
-    uci set openclash.@dns_servers[-3].ip='127.0.0.1'
-    uci set openclash.@dns_servers[-3].port='5335'
-    uci add openclash dns_servers
-    uci set openclash.@dns_servers[-4].enabled='1'
-    uci set openclash.@dns_servers[-4].group='nameserver'
-    uci set openclash.@dns_servers[-4].type='https'
-    uci set openclash.@dns_servers[-4].ip='127.0.0.1'
-    uci set openclash.@dns_servers[-4].port='5335'
-    uci add openclash dns_servers
-    uci set openclash.@dns_servers[-4].enabled='1'
-    uci set openclash.@dns_servers[-4].group='fallback'
-    uci set openclash.@dns_servers[-4].type='tls'
-    uci set openclash.@dns_servers[-4].ip='127.0.0.1'
-    uci set openclash.@dns_servers[-4].port='https'
-    uci set openclash.config.enable_custom_dns='1'
     uci set openclash.config.enable_custom_dns='1'
   fi
   uci set openclash.config.enable_redirect_dns='1'
@@ -369,29 +312,10 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-openclash")" -ne '0
   uci add_list openclash.@rule_provider_config[-1].rule_name='代理规则(by 沉默の金)'
   uci commit openclash
 fi
-if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-mosdns")" -ne '0' ];then
-  uci set mosdns.config.enabled='1'
-  uci set mosdns.config.redirect='0'
-  uci set mosdns.config.custom_local_dns='1'
-  uci set mosdns.config.dns_leak='1'
-  uci add_list mosdns.config.local_dns='https://dns.alidns.com/dns-query'
-  uci add_list mosdns.config.local_dns='https://doh.pub/dns-query'
-  uci add_list mosdns.config.local_dns='https://doh.360.cn/dns-query'
-  uci add_list mosdns.config.remote_dns='https://doh.opendns.com/dns-query'
-  uci add_list mosdns.config.remote_dns='https://dns.google/dns-query'
-  uci add_list mosdns.config.remote_dns='https://dns.cloudflare.com/dns-query'
-  uci add_list mosdns.config.remote_dns='https://dns.quad9.net/dns-query'
-  uci commit mosdns
-fi
-# echo "0 2 * * * /usr/share/cmzj/openwrt-k_tool.sh update rules" >>/etc/crontabs/root
+echo "0 2 * * * /usr/share/cmzj/openwrt-k_tool.sh update rules" >>/etc/crontabs/root
 ln -s /usr/share/cmzj/openwrt-k_tool.sh /bin/openwrt-k
 chmod +x /usr/share/cmzj/openwrt-k_tool.sh
 uci commit
 /etc/init.d/sing-box stop
 /etc/init.d/sing-box disable
-sed -i "s/option rollback '90'/option rollback '30'/" /etc/config/luci
-sed -i "s/option holdoff '4'/option holdoff '2'/" /etc/config/luci
-sed -i "s/option timeout '5'/option timeout '3'/" /etc/config/luci
-sed -i "s/option display '1.5'/option display '1'/" /etc/config/luci
 exit 0
-
