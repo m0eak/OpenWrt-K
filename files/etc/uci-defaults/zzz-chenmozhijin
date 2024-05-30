@@ -19,6 +19,7 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^mosdns")" -ne '0' ];then
   uci add_list mosdns.config.remote_dns='https://dns.cloudflare.com/dns-query'
   uci add_list mosdns.config.remote_dns='https://dns.quad9.net/dns-query'
   uci commit mosdns
+  /etc/init.d/mosdns restart
 fi
 if [ "$( opkg list-installed 2>/dev/null| grep -c "^aria2")" -ne '0' ];then
   uci set aria2.main.user='root'
