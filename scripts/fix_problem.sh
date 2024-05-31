@@ -31,7 +31,7 @@ fi
 if grep -q "gl-mt3000" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   wget https://raw.githubusercontent.com/m0eak/openwrt_patch/main/mt3000/980-dts-mt7921-add-cooling-levels.patch 
   mv 980-dts-mt7921-add-cooling-levels.patch ./target/linux/mediatek/patches-5.15/980-dts-mt7921-add-cooling-levels.patch 
-  echo "Patch Done"
+  echo "gl-mt3000增加cooling level支持无级调速"
 fi
 # https://github.com/openwrt/packages/pull/22251
 if [[ "$openwrt_tag_branch" == "v23.05.0-rc4" ]] ; then
