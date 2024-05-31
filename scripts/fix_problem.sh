@@ -7,7 +7,8 @@ sed -i 's/^	dnsmasq \\$/	dnsmasq-full \\/g' ./include/target.mk
 sed -i 's/^	b43-fwsquash.py "$(CONFIG_B43_FW_SQUASH_PHYTYPES)" "$(CONFIG_B43_FW_SQUASH_COREREVS)"/	$(TOPDIR)\/tools\/b43-tools\/files\/b43-fwsquash.py "$(CONFIG_B43_FW_SQUASH_PHYTYPES)" "$(CONFIG_B43_FW_SQUASH_COREREVS)"/' ./package/kernel/mac80211/broadcom.mk
 # Tailscale
 [ -e "./feeds/packages/net/tailscale/Makefile" ] && sed -i '/\/etc\/init\.d\/tailscale/d;/\/etc\/config\/tailscale/d;' feeds/packages/net/tailscale/Makefile
-[ -e "./package/extpackages/luci-app-tailscale/root/usr/share/luci/menu.d/luci-app-tailscale.json" ] && sed -i 's/services/vpn/g' package/extpackages/luci-app-tailscale/root/usr/share/luci/menu.d/luci-app-tailscale.json && echo "Tailscale分组修改完成"
+[ -e "./package/extpackages/luci-app-tailscale/root/usr/share/luci/menu.d/luci-app-tailscale.json" ] && sed -i 's/services/vpn/g' package/extpackages/luci-app-tailscale/root/usr/share/luci/menu.d/luci-app-tailscale.json && echo "Tailscale分组1修改完成"
+[ -e "./package/extpackages/luci-app-tailscale/root/usr/share/rpcd/acl.d/luci-app-tailscale.json" ] && sed -i 's/services/vpn/g' package/extpackages/luci-app-tailscale/root/usr/share/rpcd/acl.d/luci-app-tailscale.json && echo "Tailscale分组2修改完成"
 # 固定Vermagic
 if grep -q "x86_64" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   echo "固定Vermagic"
