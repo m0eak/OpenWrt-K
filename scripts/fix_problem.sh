@@ -34,6 +34,11 @@ if grep -q "gl-mt3000" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   mv 980-dts-mt7921-add-cooling-levels.patch ./target/linux/mediatek/patches-5.15/980-dts-mt7921-add-cooling-levels.patch 
   echo "gl-mt3000增加cooling level支持无级调速"
 fi
+# gl-mt3000改名称
+if grep -q "gl-mt3000" $GITHUB_WORKSPACE/config/"$config"/target.config; then
+  sed -i 's/'OpenWrt'/'GL-MT3000'/g' ./package/base-files/files/bin/config_generate
+  echo "gl-mt3000名称修改完成"
+fi
 # https://github.com/openwrt/packages/pull/22251
 if [[ "$openwrt_tag_branch" == "v23.05.0-rc4" ]] ; then
   if grep -q "^define Package/prometheus-node-exporter-lua-bmx6$" "feeds/packages/utils/prometheus-node-exporter-lua/Makefile"; then
