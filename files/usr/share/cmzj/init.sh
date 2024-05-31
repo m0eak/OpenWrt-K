@@ -1,6 +1,6 @@
 if [ "$( opkg list-installed 2>/dev/null| grep -c "^mosdns")" -ne '0' ];then
   uci set mosdns.config.enabled='1'
-  uci set mosdns.config.redirect='1'
+  uci set mosdns.config.redirect='0'
   uci set mosdns.config.custom_local_dns='1'
   uci set mosdns.config.enable_http3_local='0'
   uci set mosdns.config.dns_leak='1'
