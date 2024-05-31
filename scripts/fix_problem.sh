@@ -11,8 +11,6 @@ sed -i '/\/etc\/init\.d\/tailscale/d;/\/etc\/config\/tailscale/d;' feeds/package
 if grep -q "x86_64" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   echo "固定Vermagic"
   curl -s https://downloads.openwrt.org/releases/$openwrt_tag_branch_v/targets/x86/64/openwrt-$openwrt_tag_branch_v-x86-64.manifest | grep kernel | awk '{print $3}' | awk -F- '{print $3}' > vermagic
-#  wget https://downloads.openwrt.org/releases/$openwrt_tag_branch_v/targets/x86/64/openwrt-$openwrt_tag_branch_v-x86-64.manifest
-#  grep kernel openwrt-*-x86-64.manifest | awk '{print $3}' | awk -F- '{print $3}' > vermagic
   echo "当前Vermagic:"
   cat vermagic
   sed -i '121s|^|# |' ./include/kernel-defaults.mk
@@ -22,8 +20,6 @@ fi
 if grep -q "mediatek_filogic" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   echo "固定Vermagic"
   curl -s https://downloads.openwrt.org/releases/$openwrt_tag_branch_v/targets/mediatek/filogic/openwrt-$openwrt_tag_branch_v-mediatek-filogic.manifest | grep kernel | awk '{print $3}' | awk -F- '{print $3}' > vermagic
-#  wget https://downloads.openwrt.org/releases/$openwrt_tag_branch_v/targets/mediatek/filogic/openwrt-$openwrt_tag_branch_v-mediatek-filogic.manifest
-#  grep kernel openwrt-*-mediatek-filogic.manifest | awk '{print $3}' | awk -F- '{print $3}' > vermagic
   echo "当前Vermagic:"
   cat vermagic
   sed -i '121s|^|# |' ./include/kernel-defaults.mk
