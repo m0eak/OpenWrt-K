@@ -8,8 +8,8 @@ sed -i 's/^	b43-fwsquash.py "$(CONFIG_B43_FW_SQUASH_PHYTYPES)" "$(CONFIG_B43_FW_
 # Tailscale更新
 [ -d "$OPENWRT_ROOT_PATH/feeds/packages/net/tailscale" ] && echo "找到feeds内的Tailscale" && find $OPENWRT_ROOT_PATH/feeds/packages/net/ | grep Makefile | grep tailscale | xargs rm -f && echo "已删除Feeds内的Tailscale"
 [ -d "$OPENWRT_ROOT_PATH/package/feeds/packages/tailscale" ] && echo "找到feeds/packages内的Tailscale" && find $OPENWRT_ROOT_PATH/package/feeds/packages | grep Makefile | grep tailscale | xargs rm -f && echo "已删除feeds/packages内的Tailscale"
-[ -e "$OPENWRT_ROOT_PATH/package/cmzj_package/tailscale/Makefile" ] && echo "找到cmzj_package内的Tailscale" && sed -i '/\/etc\/init\.d\/tailscale/d;/\/etc\/config\/tailscale/d;' $OPENWRT_ROOT_PATH/package/cmzj_package/tailscale/Makefile && echo "Tailscale修复完成"
-# 固定Vermagic
+[ -d "$OPENWRT_ROOT_PATH/package/cmzj_package/tailscale" ] && echo "找到cmzj_package内的Tailscale" && mv $OPENWRT_ROOT_PATH/package/cmzj_package/tailscale $OPENWRT_ROOT_PATH/package/feeds/packages/tailscale && echo "目录更换完成"
+[ -e "$OPENWRT_ROOT_PATH/package/feeds/packages/tailscale/Makefile" ] && sed -i '/\/etc\/init\.d\/tailscale/d;/\/etc\/config\/tailscale/d;' $OPENWRT_ROOT_PATH/package/feeds/packages/tailscale/Makefile && echo "Tailscale修复完成"
 if grep -q "x86_64" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   echo "固定Vermagic"
   curl -s https://downloads.openwrt.org/releases/$openwrt_tag_branch_v/targets/x86/64/openwrt-$openwrt_tag_branch_v-x86-64.manifest | grep kernel | awk '{print $3}' | awk -F- '{print $3}' > vermagic
