@@ -6,7 +6,9 @@ sed -i 's/^  DEPENDS:= +kmod-crypto-manager +kmod-crypto-pcbc +kmod-crypto-fcryp
 sed -i 's/^	dnsmasq \\$/	dnsmasq-full \\/g' ./include/target.mk
 sed -i 's/^	b43-fwsquash.py "$(CONFIG_B43_FW_SQUASH_PHYTYPES)" "$(CONFIG_B43_FW_SQUASH_COREREVS)"/	$(TOPDIR)\/tools\/b43-tools\/files\/b43-fwsquash.py "$(CONFIG_B43_FW_SQUASH_PHYTYPES)" "$(CONFIG_B43_FW_SQUASH_COREREVS)"/' ./package/kernel/mac80211/broadcom.mk
 # Tailscale
-sed -i '/\/etc\/init\.d\/tailscale/d;/\/etc\/config\/tailscale/d;' feeds/packages/net/tailscale/Makefile
+[ -e "./feeds/packages/net/tailscale/Makefile" ] && sed -i '/\/etc\/init\.d\/tailscale/d;/\/etc\/config\/tailscale/d;' feeds/packages/net/tailscale/Makefile
+[ -e "./package/extpackages/luci-app-tailscale/root/usr/share/luci/menu.d/luci-app-tailscale.json" ] && sed -i 's/services/vpn/g' package/extpackages/luci-app-tailscale/root/usr/share/luci/menu.d/luci-app-tailscale.json && echo "Tailscale分组1修改完成"
+[ -e "./package/extpackages/luci-app-tailscale/root/usr/share/rpcd/acl.d/luci-app-tailscale.json" ] && sed -i 's/services/vpn/g' package/extpackages/luci-app-tailscale/root/usr/share/rpcd/acl.d/luci-app-tailscale.json && echo "Tailscale分组2修改完成"
 # 固定Vermagic
 if grep -q "x86_64" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   echo "固定Vermagic"
@@ -30,7 +32,12 @@ fi
 if grep -q "gl-mt3000" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   wget https://raw.githubusercontent.com/m0eak/openwrt_patch/main/mt3000/980-dts-mt7921-add-cooling-levels.patch 
   mv 980-dts-mt7921-add-cooling-levels.patch ./target/linux/mediatek/patches-5.15/980-dts-mt7921-add-cooling-levels.patch 
-  echo "Patch Done"
+  echo "gl-mt3000增加cooling level支持无级调速"
+fi
+# gl-mt3000改名称
+if grep -q "gl-mt3000" $GITHUB_WORKSPACE/config/"$config"/target.config; then
+  sed -i 's/'OpenWrt'/'GL-MT3000'/g' ./package/base-files/files/bin/config_generate
+  echo "gl-mt3000名称修改完成"
 fi
 # https://github.com/openwrt/packages/pull/22251
 if [[ "$openwrt_tag_branch" == "v23.05.0-rc4" ]] ; then
