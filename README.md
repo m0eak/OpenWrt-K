@@ -1,9 +1,9 @@
 # OpenWrt-K
 
-[![GitHub Repo stars](https://img.shields.io/github/stars/chenmozhijin/OpenWrt-K)](https://github.com/chenmozhijin/OpenWrt-K/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/chenmozhijin/OpenWrt-K)](https://github.com/chenmozhijin/OpenWrt-K/forks?include=active%2Carchived%2Cinactive%2Cnetwork&page=1&period=2y&sort_by=stargazer_counts)
-[![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/chenmozhijin/OpenWrt-K)](https://github.com/chenmozhijin/OpenWrt-K/commits)
-[![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/chenmozhijin/OpenWrt-K)](https://github.com/chenmozhijin/OpenWrt-K/commits)
+[![GitHub Repo stars](https://img.shields.io/github/stars/m0eak/OpenWrt-K)](https://github.com/m0eak/OpenWrt-K/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/m0eak/OpenWrt-K)](https://github.com/m0eak/OpenWrt-K/forks?include=active%2Carchived%2Cinactive%2Cnetwork&page=1&period=2y&sort_by=stargazer_counts)
+[![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/m0eak/OpenWrt-K)](https://github.com/m0eak/OpenWrt-K/commits)
+[![GitHub last commit (by committer)](https://img.shields.io/github/last-commit/m0eak/OpenWrt-K)](https://github.com/m0eak/OpenWrt-K/commits)
 [![Workflow Status](https://github.com/m0eak/OpenWrt-K/actions/workflows/build-openwrt.yml/badge.svg)](https://github.com/m0eak/OpenWrt-K/actions)
 > OpenWRT软件包与固件自动云编译
 
