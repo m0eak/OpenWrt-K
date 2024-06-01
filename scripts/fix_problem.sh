@@ -8,7 +8,7 @@ sed -i 's/^	b43-fwsquash.py "$(CONFIG_B43_FW_SQUASH_PHYTYPES)" "$(CONFIG_B43_FW_
 # Tailscale
 [ -e "$OPENWRT_ROOT_PATH/feeds/packages/net/tailscale/Makefile" ] && sed -i '/\/etc\/init\.d\/tailscale/d;/\/etc\/config\/tailscale/d;' feeds/packages/net/tailscale/Makefile && echo "Tailscale修复完成"
 [ -e "$CMZJ_PACKAGE_ROOT_PATH/luci-app-tailscale/root/usr/share/luci/menu.d/luci-app-tailscale.json" ] && echo "存在luci-app-tailscale.json" && sed -i 's/services/vpn/g' $CMZJ_PACKAGE_ROOT_PATH/luci-app-tailscale/root/usr/share/luci/menu.d/luci-app-tailscale.json && echo "Tailscale分组1修改完成"
-# [ -e "$OPENWRT_ROOT_PATH/package/extpackages/luci-app-tailscale/root/usr/share/rpcd/acl.d/luci-app-tailscale.json" ] && sed -i 's/services/vpn/g' package/extpackages/luci-app-tailscale/root/usr/share/rpcd/acl.d/luci-app-tailscale.json && echo "Tailscale分组2修改完成"
+[ -e "$CMZJ_PACKAGE_ROOT_PATH/luci-app-tailscale/root/usr/share/rpcd/acl.d/luci-app-tailscale.json" ] && echo "存在luci-app-tailscale.json" && sed -i 's/services/vpn/g' $CMZJ_PACKAGE_ROOT_PATH/luci-app-tailscale/root/usr/share/rpcd/acl.d/luci-app-tailscale.json && echo "Tailscale分组2修改完成"
 # 固定Vermagic
 if grep -q "x86_64" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   echo "固定Vermagic"
