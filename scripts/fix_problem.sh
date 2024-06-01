@@ -6,27 +6,21 @@ sed -i 's/^  DEPENDS:= +kmod-crypto-manager +kmod-crypto-pcbc +kmod-crypto-fcryp
 sed -i 's/^	dnsmasq \\$/	dnsmasq-full \\/g' ./include/target.mk
 sed -i 's/^	b43-fwsquash.py "$(CONFIG_B43_FW_SQUASH_PHYTYPES)" "$(CONFIG_B43_FW_SQUASH_COREREVS)"/	$(TOPDIR)\/tools\/b43-tools\/files\/b43-fwsquash.py "$(CONFIG_B43_FW_SQUASH_PHYTYPES)" "$(CONFIG_B43_FW_SQUASH_COREREVS)"/' ./package/kernel/mac80211/broadcom.mk
 # Tailscale
-[ -e "./feeds/packages/net/tailscale/Makefile" ] && sed -i '/\/etc\/init\.d\/tailscale/d;/\/etc\/config\/tailscale/d;' feeds/packages/net/tailscale/Makefile
-[ -e "./package/extpackages/luci-app-tailscale/root/usr/share/luci/menu.d/luci-app-tailscale.json" ] && sed -i 's/services/vpn/g' package/extpackages/luci-app-tailscale/root/usr/share/luci/menu.d/luci-app-tailscale.json && echo "Tailscale分组1修改完成"
-[ -e "./package/extpackages/luci-app-tailscale/root/usr/share/rpcd/acl.d/luci-app-tailscale.json" ] && sed -i 's/services/vpn/g' package/extpackages/luci-app-tailscale/root/usr/share/rpcd/acl.d/luci-app-tailscale.json && echo "Tailscale分组2修改完成"
+[ -e "$OPENWRT_ROOT_PATH/feeds/packages/net/tailscale/Makefile" ] && sed -i '/\/etc\/init\.d\/tailscale/d;/\/etc\/config\/tailscale/d;' feeds/packages/net/tailscale/Makefile && echo "Tailscale修复完成"
 # 固定Vermagic
 if grep -q "x86_64" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   echo "固定Vermagic"
   curl -s https://downloads.openwrt.org/releases/$openwrt_tag_branch_v/targets/x86/64/openwrt-$openwrt_tag_branch_v-x86-64.manifest | grep kernel | awk '{print $3}' | awk -F- '{print $3}' > vermagic
   echo "当前Vermagic:"
   cat vermagic
-  sed -i '121s|^|# |' ./include/kernel-defaults.mk
-  sed -i $'121a\\\tcp $(TOPDIR)/vermagic $(LINUX_DIR)/.vermagic\\' ./include/kernel-defaults.mk
-  echo "固定Vermagic完成"
+  sed -i '121s|^|# |' ./include/kernel-defaults.mk && sed -i $'121a\\\tcp $(TOPDIR)/vermagic $(LINUX_DIR)/.vermagic\\' ./include/kernel-defaults.mk && echo "固定Vermagic完成"
 fi
 if grep -q "mediatek_filogic" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   echo "固定Vermagic"
   curl -s https://downloads.openwrt.org/releases/$openwrt_tag_branch_v/targets/mediatek/filogic/openwrt-$openwrt_tag_branch_v-mediatek-filogic.manifest | grep kernel | awk '{print $3}' | awk -F- '{print $3}' > vermagic
   echo "当前Vermagic:"
   cat vermagic
-  sed -i '121s|^|# |' ./include/kernel-defaults.mk
-  sed -i $'121a\\\tcp $(TOPDIR)/vermagic $(LINUX_DIR)/.vermagic\\' ./include/kernel-defaults.mk
-  echo "固定Vermagic完成"
+  sed -i '121s|^|# |' ./include/kernel-defaults.mk && sed -i $'121a\\\tcp $(TOPDIR)/vermagic $(LINUX_DIR)/.vermagic\\' ./include/kernel-defaults.mk && echo "固定Vermagic完成"
 fi
 # gl-mt3000打风扇Patch
 if grep -q "gl-mt3000" $GITHUB_WORKSPACE/config/"$config"/target.config; then
