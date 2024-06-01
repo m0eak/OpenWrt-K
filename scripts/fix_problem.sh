@@ -15,18 +15,14 @@ if grep -q "x86_64" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   curl -s https://downloads.openwrt.org/releases/$openwrt_tag_branch_v/targets/x86/64/openwrt-$openwrt_tag_branch_v-x86-64.manifest | grep kernel | awk '{print $3}' | awk -F- '{print $3}' > vermagic
   echo "当前Vermagic:"
   cat vermagic
-  sed -i '121s|^|# |' ./include/kernel-defaults.mk
-  sed -i $'121a\\\tcp $(TOPDIR)/vermagic $(LINUX_DIR)/.vermagic\\' ./include/kernel-defaults.mk
-  echo "固定Vermagic完成"
+  sed -i '121s|^|# |' ./include/kernel-defaults.mk && sed -i $'121a\\\tcp $(TOPDIR)/vermagic $(LINUX_DIR)/.vermagic\\' ./include/kernel-defaults.mk && echo "固定Vermagic完成"
 fi
 if grep -q "mediatek_filogic" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   echo "固定Vermagic"
   curl -s https://downloads.openwrt.org/releases/$openwrt_tag_branch_v/targets/mediatek/filogic/openwrt-$openwrt_tag_branch_v-mediatek-filogic.manifest | grep kernel | awk '{print $3}' | awk -F- '{print $3}' > vermagic
   echo "当前Vermagic:"
   cat vermagic
-  sed -i '121s|^|# |' ./include/kernel-defaults.mk
-  sed -i $'121a\\\tcp $(TOPDIR)/vermagic $(LINUX_DIR)/.vermagic\\' ./include/kernel-defaults.mk
-  echo "固定Vermagic完成"
+  sed -i '121s|^|# |' ./include/kernel-defaults.mk && sed -i $'121a\\\tcp $(TOPDIR)/vermagic $(LINUX_DIR)/.vermagic\\' ./include/kernel-defaults.mk && echo "固定Vermagic完成"
 fi
 # gl-mt3000打风扇Patch
 if grep -q "gl-mt3000" $GITHUB_WORKSPACE/config/"$config"/target.config; then
