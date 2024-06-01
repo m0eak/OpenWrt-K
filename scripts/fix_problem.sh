@@ -30,10 +30,6 @@ if grep -q "gl-mt3000" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   mv 980-dts-mt7921-add-cooling-levels.patch ./target/linux/mediatek/patches-5.15/980-dts-mt7921-add-cooling-levels.patch 
   echo "gl-mt3000增加cooling level支持无级调速"
 fi
-# 防止纯ap模式下保留配置更新失联
-if grep -q "gl-mt3000" $GITHUB_WORKSPACE/config/"$config"/target.config; then
-  [ -e "$GITHUB_WORKSPACE/files/etc/uci-defaults/zzz-chenmozhijin" ] && echo "存在zzz-chenmozhijin" && sed -i '/network/d' $GITHUB_WORKSPACE/files/etc/uci-defaults/zzz-chenmozhijin
-fi
 # gl-mt3000改名称
 if grep -q "gl-mt3000" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   sed -i 's/'OpenWrt'/'GL-MT3000'/g' $OPENWRT_ROOT_PATH/package/base-files/files/bin/config_generate && echo "gl-mt3000名称修改完成"
