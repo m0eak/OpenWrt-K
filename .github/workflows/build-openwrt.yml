@@ -1447,6 +1447,12 @@ jobs:
             ${{ env.UPLOAD_ROOT_PATH }}/package-upload/*
           body_path: ${{ env.UPLOAD_ROOT_PATH }}/release.txt
 
+      - name: 删除旧的 Workflow
+        uses: GitRML/delete-workflow-runs@main
+        with:
+          retain_days: 14
+          keep_minimum_runs: 6
+
       - name: 删除旧的Releases
         uses: dev-drprasad/delete-older-releases@v0.3.2
         with:
