@@ -5,8 +5,9 @@ openwrt_tag_branch_v=$(sed -n '/openwrt_tag\/branch/p' $GITHUB_WORKSPACE/config/
 sed -i 's/^  DEPENDS:= +kmod-crypto-manager +kmod-crypto-pcbc +kmod-crypto-fcrypt$/  DEPENDS:= +kmod-crypto-manager +kmod-crypto-pcbc +kmod-crypto-fcrypt +kmod-udptunnel4 +kmod-udptunnel6/' package/kernel/linux/modules/netsupport.mk #https://github.com/openwrt/openwrt/commit/ecc53240945c95bc77663b79ccae6e2bd046c9c8
 sed -i 's/^	dnsmasq \\$/	dnsmasq-full \\/g' ./include/target.mk
 sed -i 's/^	b43-fwsquash.py "$(CONFIG_B43_FW_SQUASH_PHYTYPES)" "$(CONFIG_B43_FW_SQUASH_COREREVS)"/	$(TOPDIR)\/tools\/b43-tools\/files\/b43-fwsquash.py "$(CONFIG_B43_FW_SQUASH_PHYTYPES)" "$(CONFIG_B43_FW_SQUASH_COREREVS)"/' ./package/kernel/mac80211/broadcom.mk
-# Tailscale更新
+# Tailscale
 [ -e "$OPENWRT_ROOT_PATH/feeds/packages/net/tailscale/Makefile" ] && sed -i '/\/etc\/init\.d\/tailscale/d;/\/etc\/config\/tailscale/d;' feeds/packages/net/tailscale/Makefile && echo "Tailscale修复完成"
+# 固定Vermagic
 if grep -q "x86_64" $GITHUB_WORKSPACE/config/"$config"/target.config; then
   echo "固定Vermagic"
   curl -s https://downloads.openwrt.org/releases/$openwrt_tag_branch_v/targets/x86/64/openwrt-$openwrt_tag_branch_v-x86-64.manifest | grep kernel | awk '{print $3}' | awk -F- '{print $3}' > vermagic
