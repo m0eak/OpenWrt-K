@@ -32,7 +32,7 @@ if grep -q "gl-mt3000" $GITHUB_WORKSPACE/config/"$config"/target.config; then
 fi
 # 防止纯ap模式下保留配置更新失联
 if grep -q "gl-mt3000" $GITHUB_WORKSPACE/config/"$config"/target.config; then
-  [ -e "$GITHUB_WORKSPACE/files/etc/uci-defaults/zzz-chenmozhijin"] && echo "存在zzz-chenmozhijin" && sed -i '/network/d' $GITHUB_WORKSPACE/files/etc/uci-defaults/zzz-chenmozhijin
+  [ -e "$GITHUB_WORKSPACE/files/etc/uci-defaults/zzz-chenmozhijin" ] && echo "存在zzz-chenmozhijin" && sed -i '/network/d' $GITHUB_WORKSPACE/files/etc/uci-defaults/zzz-chenmozhijin
 fi
 # gl-mt3000改名称
 if grep -q "gl-mt3000" $GITHUB_WORKSPACE/config/"$config"/target.config; then
