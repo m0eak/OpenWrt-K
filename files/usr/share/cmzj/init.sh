@@ -340,7 +340,15 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^smartdns")" -ne '0' ] && [ !
 fi
 uci commit
 sleep 1s
-if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-tailscale")" -ne '0' ] && [ "$( cat /usr/share/luci/menu.d/luci-app-tailscale.json | grep -c "^services")" -ne '4' ];then
-  sed -i 's/services/vpn/g' /usr/share/luci/menu.d/luci-app-tailscale.json && rm -rf luci-indexcache.*.json && /etc/init.d/rpcd restart
+need_restart=0
+if [ "$(opkg list-installed 2>/dev/null | grep -c "^luci-app-tailscale")" -ne '0' ] && [ "$(cat /usr/share/luci/menu.d/luci-app-tailscale.json | grep -c "^services")" -ne '1' ]; then
+  sed -i 's/services/vpn/g' /usr/share/luci/menu.d/luci-app-tailscale.json && rm -rf luci-indexcache.*.json
+  need_restart=1
 fi
-
+if [ "$(opkg list-installed 2>/dev/null | grep -c "^luci-app-ttyd")" -ne '0' ] && [ "$(cat /usr/share/luci/menu.d/luci-app-ttyd.json | grep -c "^services")" -ne '1' ]; then
+  sed -i 's/services/system/g' /usr/share/luci/menu.d/luci-app-ttyd.json && rm -rf luci-indexcache.*.json
+  need_restart=1
+fi
+if [ "$need_restart" -eq '1' ]; then
+  /etc/init.d/rpcd restart
+fi
