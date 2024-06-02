@@ -34,6 +34,22 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-tailscale")" -ne '0
   uci set firewall.tszone.forward='ACCEPT'
   uci commit firewall
 fi
+if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-tailscale")" -ne '0' ] && [ "$( cat /etc/openwrt_release | grep -c "x86_64")" -ne '0' ];then
+  uci set tailscale.settings.enabled='1'
+  uci set tailscale.settings.port='41650'
+  uci set tailscale.settings.config_path='/etc/tailscale'
+  uci set tailscale.settings.fw_mode='nftables'
+  uci set tailscale.settings.log_stdout='1'
+  uci set tailscale.settings.log_stderr='1'
+  uci set tailscale.settings.acceptRoutes='0'
+  uci set tailscale.settings.hostname='openwrt'
+  uci set tailscale.settings.acceptDNS='1'
+  uci set tailscale.settings.advertiseExitNode='1'
+  uci commit tailscale
+  /etc/init.d/tailscale restart
+  uci set firewall.tszone.forward='ACCEPT'
+  uci commit firewall
+fi
 if [ "$( opkg list-installed 2>/dev/null| grep -c "^mosdns")" -ne '0' ];then
   uci set mosdns.config.enabled='1'
   uci set mosdns.config.redirect='0'
