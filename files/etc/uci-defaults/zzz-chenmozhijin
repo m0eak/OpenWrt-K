@@ -2,6 +2,9 @@
 sed -i "/^DISTRIB_DESCRIPTION='/s/'$/ Compiled by 沉默の金'/" /etc/openwrt_release
 [ -d "/etc/init.d" ] && chmod +x /etc/init.d/*
 [ -e "/usr/bin/AdGuardHome/AdGuardHome" ] && chmod 755 /usr/bin/AdGuardHome/AdGuardHome
+until [ "$( opkg list-installed 2>/dev/null| grep -c "^kernel")" -ne '0' ]; do
+  sleep 1
+done
 uci set luci.main.mediaurlbase='/luci-static/bootstrap'
 uci commit luci
 if [ "$(grep -c "/usr/share/cmzj/openwrt-k_tool.sh update rules" /etc/crontabs/root)" -eq '0' ];then
