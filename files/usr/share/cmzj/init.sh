@@ -10,7 +10,28 @@ else
   /etc/init.d/network restart
 fi
 # 判定是否为ap模式
-sleep 3
+sleep 2
+if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-fancontrol")" -ne '0' ];then
+  uci set fancontrol.settings.enabled='1'
+  uci set fancontrol.settings.start_speed='55'
+  uci set fancontrol.settings.start_temp='65'
+  uci commit fancontrol
+  /etc/init.d/fancontrol restart
+fi
+if [ "$( cat /etc/board.json | grep -c "gl-mt3000")" -ne '0' ];then
+  uci set tailscale.settings.enabled='1'
+  uci set tailscale.settings.port='41650'
+  uci set tailscale.settings.config_path='/etc/tailscale'
+  uci set tailscale.settings.fw_mode='nftables'
+  uci set tailscale.settings.log_stdout='1'
+  uci set tailscale.settings.log_stderr='1'
+  uci set tailscale.settings.acceptRoutes='0'
+  uci set tailscale.settings.hostname='gl-mt3000'
+  uci set tailscale.settings.acceptDNS='1'
+  uci set tailscale.settings.advertiseExitNode='1'
+  uci commit tailscale
+  /etc/init.d/tailscale restart
+fi
 if [ "$( opkg list-installed 2>/dev/null| grep -c "^mosdns")" -ne '0' ];then
   uci set mosdns.config.enabled='1'
   uci set mosdns.config.redirect='0'
