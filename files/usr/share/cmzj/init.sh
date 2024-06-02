@@ -31,6 +31,8 @@ if [ "$( cat /etc/board.json | grep -c "gl-mt3000")" -ne '0' ];then
   uci set tailscale.settings.advertiseExitNode='1'
   uci commit tailscale
   /etc/init.d/tailscale restart
+  uci set firewall.tszone.forward='ACCEPT'
+  uci commit firewall
 fi
 if [ "$( opkg list-installed 2>/dev/null| grep -c "^mosdns")" -ne '0' ];then
   uci set mosdns.config.enabled='1'
