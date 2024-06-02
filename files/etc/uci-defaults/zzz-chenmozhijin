@@ -1,7 +1,4 @@
 #!/bin/sh
-uci set network.lan.ipaddr="192.168.1.1"
-uci commit network
-/etc/init.d/network restart
 sed -i "/^DISTRIB_DESCRIPTION='/s/'$/ Compiled by 沉默の金'/" /etc/openwrt_release
 [ -d "/etc/init.d" ] && chmod +x /etc/init.d/*
 [ -e "/usr/bin/AdGuardHome/AdGuardHome" ] && chmod 755 /usr/bin/AdGuardHome/AdGuardHome
@@ -11,7 +8,6 @@ echo "0 2 * * * /usr/share/cmzj/openwrt-k_tool.sh update rules" >>/etc/crontabs/
 ln -s /usr/share/cmzj/openwrt-k_tool.sh /bin/openwrt-k
 chmod +x /usr/share/cmzj/openwrt-k_tool.sh
 chmod +x /usr/share/cmzj/init.sh
-
 uci commit
 sed -i "s/option rollback '90'/option rollback '30'/" /etc/config/luci
 sed -i "s/option holdoff '4'/option holdoff '2'/" /etc/config/luci
@@ -19,6 +15,7 @@ sed -i "s/option timeout '5'/option timeout '3'/" /etc/config/luci
 sed -i "s/option display '1.5'/option display '1'/" /etc/config/luci
 /etc/init.d/sing-box stop
 /etc/init.d/sing-box disable
-sleep 5
+sleep 5s
+
 sh +x /usr/share/cmzj/init.sh
 exit 0

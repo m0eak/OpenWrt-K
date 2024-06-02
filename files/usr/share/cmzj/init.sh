@@ -1,4 +1,16 @@
 #!/bin/sh
+# 判定是否为ap模式
+eth_count=$(ls /sys/class/net | grep -c "eth")
+port_count=$(uci show network | grep "network.@device\[0\].ports=" | tr ' ' '\n' | grep -c "eth")
+if [ "$port_count" -eq "$eth_count" ] && [ "$(uci show dhcp | grep -c "dhcp.lan.ignore='1'")" -eq "1" ] && [ "$(uci show dhcp | grep -c "dhcp.lan.dhcpv6")" -eq 0 ]; then
+  echo "Skip modify lan ip"
+else
+  uci set network.lan.ipaddr="192.168.1.1"
+  uci commit network
+  /etc/init.d/network restart
+fi
+# 判定是否为ap模式
+sleep 3
 if [ "$( opkg list-installed 2>/dev/null| grep -c "^mosdns")" -ne '0' ];then
   uci set mosdns.config.enabled='1'
   uci set mosdns.config.redirect='0'

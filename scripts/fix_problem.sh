@@ -30,8 +30,7 @@ if grep -q "gl-mt3000" $GITHUB_WORKSPACE/config/"$config"/target.config; then
 fi
 # gl-mt3000改名称
 if grep -q "gl-mt3000" $GITHUB_WORKSPACE/config/"$config"/target.config; then
-  sed -i 's/'OpenWrt'/'GL-MT3000'/g' ./package/base-files/files/bin/config_generate
-  echo "gl-mt3000名称修改完成"
+  sed -i 's/'OpenWrt'/'GL-MT3000'/g' $OPENWRT_ROOT_PATH/package/base-files/files/bin/config_generate && echo "gl-mt3000名称修改完成"
 fi
 # https://github.com/openwrt/packages/pull/22251
 if [[ "$openwrt_tag_branch" == "v23.05.0-rc4" ]] ; then
