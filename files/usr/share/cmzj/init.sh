@@ -3,7 +3,7 @@
 eth_count=$(ls /sys/class/net | grep -c "eth")
 port_count=$(uci show network | grep "network.@device\[0\].ports=" | tr ' ' '\n' | grep -c "eth")
 if [ "$port_count" -eq "$eth_count" ] && [ "$(uci show dhcp | grep -c "dhcp.lan.ignore='1'")" -eq "1" ] && [ "$(uci show dhcp | grep -c "dhcp.lan.dhcpv6")" -eq 0 ]; then
-  :   # 什么都不做
+  echo "Skip modify lan ip"
 else
   uci set network.lan.ipaddr="192.168.1.1"
   uci commit network
