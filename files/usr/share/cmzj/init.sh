@@ -10,9 +10,7 @@ else
   /etc/init.d/network restart
 fi
 # 判定是否为ap模式
-
 sleep 3
-
 if [ "$( opkg list-installed 2>/dev/null| grep -c "^mosdns")" -ne '0' ];then
   uci set mosdns.config.enabled='1'
   uci set mosdns.config.redirect='0'
