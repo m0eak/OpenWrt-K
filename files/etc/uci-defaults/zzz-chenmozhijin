@@ -21,6 +21,5 @@ sed -i "s/option display '1.5'/option display '1'/" /etc/config/luci
 /etc/init.d/sing-box stop
 /etc/init.d/sing-box disable
 sleep 5s
-
 sh +x /usr/share/cmzj/init.sh
 exit 0
