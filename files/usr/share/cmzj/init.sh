@@ -18,7 +18,7 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-fancontrol")" -ne '
   uci commit fancontrol
   /etc/init.d/fancontrol restart
 fi
-if [ "$( cat /etc/board.json | grep -c "gl-mt3000")" -ne '0' ];then
+if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-tailscale")" -ne '0' ] && [ "$( cat /etc/board.json | grep -c "gl-mt3000")" -ne '0' ];then
   uci set tailscale.settings.enabled='1'
   uci set tailscale.settings.port='41650'
   uci set tailscale.settings.config_path='/etc/tailscale'
