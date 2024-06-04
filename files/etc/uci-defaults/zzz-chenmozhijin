@@ -10,6 +10,12 @@ uci commit luci
 if [ "$(grep -c "/usr/share/cmzj/openwrt-k_tool.sh update rules" /etc/crontabs/root)" -eq '0' ];then
   echo "0 2 * * * /usr/share/cmzj/openwrt-k_tool.sh update rules" >>/etc/crontabs/root
 fi
+if [ "$(grep -c "30 23 * * * echo "0" > /sys/class/leds/white:system/brightness" /etc/crontabs/root)" -eq '0' ];then
+  echo "30 23 * * * echo "0" > /sys/class/leds/white:system/brightness" >>/etc/crontabs/root
+fi
+if [ "$(grep -c "00 05 * * * echo "1" > /sys/class/leds/white:system/brightness" /etc/crontabs/root)" -eq '0' ];then
+  echo "00 05 * * * echo "1" > /sys/class/leds/white:system/brightness" >>/etc/crontabs/root
+fi
 ln -s /usr/share/cmzj/openwrt-k_tool.sh /bin/openwrt-k
 chmod +x /usr/share/cmzj/openwrt-k_tool.sh
 chmod +x /usr/share/cmzj/init.sh
