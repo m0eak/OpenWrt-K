@@ -21,19 +21,14 @@ fi
 if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-tailscale")" -ne '0' ] && [ "$( cat /etc/board.json | grep -c "gl-mt3000")" -ne '0' ];then
   if [ "$( opkg list-installed 2>/dev/null| grep -c "^firewall4")" -eq '1' ];then
     uci set tailscale.settings.fw_mode='nftables'
-    uci del tailscale.settings.access
-    uci add_list tailscale.settings.access='tsfwlan'
-    uci add_list tailscale.settings.access='tsfwwan'
-    uci add_list tailscale.settings.access='lanfwts'
-    uci add_list tailscale.settings.access='wanfwts'
   else
     uci set tailscale.settings.fw_mode='iptables'
-    uci del tailscale.settings.access
-    uci add_list tailscale.settings.access='tsfwlan'
-    uci add_list tailscale.settings.access='tsfwwan'
-    uci add_list tailscale.settings.access='lanfwts'
-    uci add_list tailscale.settings.access='wanfwts'
   fi
+  uci del tailscale.settings.access
+  uci add_list tailscale.settings.access='tsfwlan'
+  uci add_list tailscale.settings.access='tsfwwan'
+  uci add_list tailscale.settings.access='lanfwts'
+  uci add_list tailscale.settings.access='wanfwts'
   uci set tailscale.settings.enabled='1'
   uci set tailscale.settings.port='41650'
   uci set tailscale.settings.config_path='/etc/tailscale'
