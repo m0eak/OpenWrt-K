@@ -11,6 +11,18 @@ else
 fi
 # 判定是否为ap模式
 sleep 2
+
+if [ "$(grep -c "/usr/share/cmzj/openwrt-k_tool.sh update rules" /etc/crontabs/root)" -eq '0' ];then
+  echo "0 2 * * * /usr/share/cmzj/openwrt-k_tool.sh update rules" >>/etc/crontabs/root
+fi
+# led定时开关
+if [-e /sys/class/leds/white:system/brightness ] && [ "$(grep -c "30 23 * * * echo "0" > /sys/class/leds/white:system/brightness" /etc/crontabs/root)" -eq '0' ];then
+  echo "30 23 * * * echo "0" > /sys/class/leds/white:system/brightness" >>/etc/crontabs/root
+fi
+if [-e /sys/class/leds/white:system/brightness ] && [ "$(grep -c "00 05 * * * echo "1" > /sys/class/leds/white:system/brightness" /etc/crontabs/root)" -eq '0' ];then
+  echo "00 05 * * * echo "1" > /sys/class/leds/white:system/brightness" >>/etc/crontabs/root
+fi
+# led定时开关
 if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-fancontrol")" -ne '0' ];then
   uci set fancontrol.settings.enabled='1'
   uci set fancontrol.settings.start_speed='55'
