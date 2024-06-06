@@ -26,6 +26,6 @@ sed -i "s/option timeout '5'/option timeout '3'/" /etc/config/luci
 sed -i "s/option display '1.5'/option display '1'/" /etc/config/luci
 /etc/init.d/sing-box stop
 /etc/init.d/sing-box disable
-sleep 3s
+sleep 1s
 sh +x /usr/share/cmzj/init.sh
 exit 0
