@@ -158,7 +158,8 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-openclash")" -ne '0
     uci set openclash.config.enable_custom_dns='1'
   fi
   uci set openclash.config.enable_redirect_dns='1'
-  uci set openclash.config.en_mode='redir-host-mix'
+  uci set openclash.config.operation_mode='fake-ip'
+  uci set openclash.config.en_mode='fake-ip-mix'
   uci delete openclash.config.enable_udp_proxy='1'
   uci set openclash.config.ipv6_enable='1'
   uci set openclash.config.ipv6_dns='1'
@@ -183,7 +184,7 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-openclash")" -ne '0
   uci set openclash.config.auto_restart='0'
   uci set openclash.config.auto_restart_week_time='1'
   uci set openclash.config.auto_restart_day_time='0'
-  uci set openclash.config.ipv6_mode='0'
+  uci set openclash.config.ipv6_mode='2'
   uci set openclash.config.enable_v6_udp_proxy='1'
   uci set openclash.config.china_ip6_route='1'
   uci add openclash rule_provider_config
@@ -192,9 +193,11 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-openclash")" -ne '0
   uci set openclash.@rule_provider_config[-1].config='all'
   uci set openclash.@rule_provider_config[-1].group='DIRECT'
   uci set openclash.@rule_provider_config[-1].position='0'
-  uci add_list openclash.@rule_provider_config[-1].rule_name='直连规则(by 沉默の金)'
-  uci add_list openclash.@rule_provider_config[-1].rule_name='国内IP白名单'
-  uci add_list openclash.@rule_provider_config[-1].rule_name='国内域名白名单'
+  uci set openclash.@rule_provider_config[0].name='Custom-Rules-Direct'
+  uci set openclash.@rule_provider_config[0].type='http'
+  uci set openclash.@rule_provider_config[0].behavior='domain'
+  uci set openclash.@rule_provider_config[0].format='text'
+  uci set openclash.@rule_provider_config[0].url='https://raw.githubusercontent.com/m0eak/clash-rules/main/rule-provider/direct.txt'
   uci commit openclash
 fi
 if [ "$( opkg list-installed 2>/dev/null| grep -c "^smartdns")" -ne '0' ] && [ ! "$(uci -q get smartdns.@server[0].name)" = "清华大学TUNA协会" ];then
