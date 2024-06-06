@@ -162,6 +162,7 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-openclash")" -ne '0
   uci set openclash.config.enable_redirect_dns='1'
   uci set openclash.config.operation_mode='fake-ip'
   uci set openclash.config.en_mode='fake-ip-mix'
+  uci set openclash.config.enable_meta_core='1'
   uci delete openclash.config.enable_udp_proxy='1'
   uci set openclash.config.ipv6_enable='1'
   uci set openclash.config.ipv6_dns='1'
