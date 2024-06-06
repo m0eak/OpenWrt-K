@@ -1,16 +1,18 @@
 #!/bin/sh
-# 判定是否为ap模式
-eth_count=$(ls /sys/class/net | grep -c "eth")
-port_count=$(uci show network | grep "network.@device\[0\].ports=" | tr ' ' '\n' | grep -c "eth")
-if [ "$port_count" -eq "$eth_count" ] && [ "$(uci show dhcp | grep -c "dhcp.lan.ignore='1'")" -eq "1" ] && [ "$(uci show dhcp | grep -c "dhcp.lan.dhcpv6")" -eq 0 ]; then
-  echo "Skip modify lan ip"
-else
-  uci set network.lan.ipaddr="192.168.1.1"
-  uci commit network
-  /etc/init.d/network restart
+if [ "$(grep -c "/usr/share/cmzj/openwrt-k_tool.sh update rules" /etc/crontabs/root)" -eq '0' ];then
+  echo "0 2 * * * /usr/share/cmzj/openwrt-k_tool.sh update rules" >>/etc/crontabs/root
 fi
-# 判定是否为ap模式
-sleep 2
+if [ "$(grep -c "/proc/sys/vm/drop_caches" /etc/crontabs/root)" -eq '0' ];then
+  echo "0 */1 * * * sync && echo 3 > /proc/sys/vm/drop_caches" >>/etc/crontabs/root
+fi
+# led定时开关
+if [-e /sys/class/leds/white:system/brightness ] && [ "$(grep -c "30 23 * * * echo "0" > /sys/class/leds/white:system/brightness" /etc/crontabs/root)" -eq '0' ];then
+  echo "30 23 * * * echo "0" > /sys/class/leds/white:system/brightness" >>/etc/crontabs/root
+fi
+if [-e /sys/class/leds/white:system/brightness ] && [ "$(grep -c "00 05 * * * echo "1" > /sys/class/leds/white:system/brightness" /etc/crontabs/root)" -eq '0' ];then
+  echo "00 05 * * * echo "1" > /sys/class/leds/white:system/brightness" >>/etc/crontabs/root
+fi
+# led定时开关
 if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-fancontrol")" -ne '0' ];then
   uci set fancontrol.settings.enabled='1'
   uci set fancontrol.settings.start_speed='55'
@@ -158,7 +160,9 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-openclash")" -ne '0
     uci set openclash.config.enable_custom_dns='1'
   fi
   uci set openclash.config.enable_redirect_dns='1'
-  uci set openclash.config.en_mode='redir-host-mix'
+  uci set openclash.config.operation_mode='fake-ip'
+  uci set openclash.config.en_mode='fake-ip-mix'
+  uci set openclash.config.enable_meta_core='1'
   uci delete openclash.config.enable_udp_proxy='1'
   uci set openclash.config.ipv6_enable='1'
   uci set openclash.config.ipv6_dns='1'
@@ -183,18 +187,23 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-openclash")" -ne '0
   uci set openclash.config.auto_restart='0'
   uci set openclash.config.auto_restart_week_time='1'
   uci set openclash.config.auto_restart_day_time='0'
-  uci set openclash.config.ipv6_mode='0'
+  uci set openclash.config.ipv6_mode='2'
   uci set openclash.config.enable_v6_udp_proxy='1'
   uci set openclash.config.china_ip6_route='1'
-  uci add openclash rule_provider_config
-  uci set openclash.@rule_provider_config[-1].enabled='1'
-  uci set openclash.@rule_provider_config[-1].interval='86400'
-  uci set openclash.@rule_provider_config[-1].config='all'
-  uci set openclash.@rule_provider_config[-1].group='DIRECT'
-  uci set openclash.@rule_provider_config[-1].position='0'
-  uci add_list openclash.@rule_provider_config[-1].rule_name='直连规则(by 沉默の金)'
-  uci add_list openclash.@rule_provider_config[-1].rule_name='国内IP白名单'
-  uci add_list openclash.@rule_provider_config[-1].rule_name='国内域名白名单'
+  if [ "$( uci show openclash| grep -c "/m0eak/clash-rules/main/rule-provider/direct.txt")" -eq '0' ];then
+    uci add openclash rule_providers
+    uci set openclash.@rule_providers[-1]=rule_providers
+    uci set openclash.@rule_providers[-1].enabled='1'
+    uci set openclash.@rule_providers[-1].config='all'
+    uci set openclash.@rule_providers[-1].name='Custom-Rules-Direct'
+    uci set openclash.@rule_providers[-1].type='http'
+    uci set openclash.@rule_providers[-1].behavior='domain'
+    uci set openclash.@rule_providers[-1].format='text'
+    uci set openclash.@rule_providers[-1].url='https://raw.githubusercontent.com/m0eak/clash-rules/main/rule-provider/direct.txt'
+    uci set openclash.@rule_providers[-1].interval='3600'
+    uci set openclash.@rule_providers[-1].position='0'
+    uci set openclash.@rule_providers[-1].group='DIRECT'
+  fi
   uci commit openclash
 fi
 if [ "$( opkg list-installed 2>/dev/null| grep -c "^smartdns")" -ne '0' ] && [ ! "$(uci -q get smartdns.@server[0].name)" = "清华大学TUNA协会" ];then
