@@ -187,17 +187,20 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-openclash")" -ne '0
   uci set openclash.config.ipv6_mode='2'
   uci set openclash.config.enable_v6_udp_proxy='1'
   uci set openclash.config.china_ip6_route='1'
-  uci add openclash rule_provider_config
-  uci set openclash.@rule_provider_config[-1].enabled='1'
-  uci set openclash.@rule_provider_config[-1].interval='86400'
-  uci set openclash.@rule_provider_config[-1].config='all'
-  uci set openclash.@rule_provider_config[-1].group='DIRECT'
-  uci set openclash.@rule_provider_config[-1].position='0'
-  uci set openclash.@rule_provider_config[-1].name='Custom-Rules-Direct'
-  uci set openclash.@rule_provider_config[-1].type='http'
-  uci set openclash.@rule_provider_config[-1].behavior='domain'
-  uci set openclash.@rule_provider_config[-1].format='text'
-  uci set openclash.@rule_provider_config[-1].url='https://raw.githubusercontent.com/m0eak/clash-rules/main/rule-provider/direct.txt'
+  if [ "$( uci show openclash| grep -c "/m0eak/clash-rules/main/rule-provider/direct.txt")" -eq '0' ];then
+    uci add openclash rule_providers
+    uci set openclash.@rule_providers[-1]=rule_providers
+    uci set openclash.@rule_providers[-1].enabled='1'
+    uci set openclash.@rule_providers[-1].config='all'
+    uci set openclash.@rule_providers[-1].name='Custom-Rules-Direct'
+    uci set openclash.@rule_providers[-1].type='http'
+    uci set openclash.@rule_providers[-1].behavior='domain'
+    uci set openclash.@rule_providers[-1].format='text'
+    uci set openclash.@rule_providers[-1].url='https://raw.githubusercontent.com/m0eak/clash-rules/main/rule-provider/direct.txt'
+    uci set openclash.@rule_providers[-1].interval='3600'
+    uci set openclash.@rule_providers[-1].position='0'
+    uci set openclash.@rule_providers[-1].group='DIRECT'
+  fi
   uci commit openclash
 fi
 if [ "$( opkg list-installed 2>/dev/null| grep -c "^smartdns")" -ne '0' ] && [ ! "$(uci -q get smartdns.@server[0].name)" = "清华大学TUNA协会" ];then
