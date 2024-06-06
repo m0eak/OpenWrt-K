@@ -1,17 +1,4 @@
 #!/bin/sh
-# 判定是否为ap模式
-eth_count=$(ls /sys/class/net | grep -c "eth")
-port_count=$(uci show network | grep "network.@device\[0\].ports=" | tr ' ' '\n' | grep -c "eth")
-if [ "$port_count" -eq "$eth_count" ] && [ "$(uci show dhcp | grep -c "dhcp.lan.ignore='1'")" -eq "1" ] && [ "$(uci show dhcp | grep -c "dhcp.lan.dhcpv6")" -eq 0 ]; then
-  echo "Skip modify lan ip"
-else
-  uci set network.lan.ipaddr="192.168.1.1"
-  uci commit network
-  /etc/init.d/network restart
-fi
-# 判定是否为ap模式
-sleep 2
-
 if [ "$(grep -c "/usr/share/cmzj/openwrt-k_tool.sh update rules" /etc/crontabs/root)" -eq '0' ];then
   echo "0 2 * * * /usr/share/cmzj/openwrt-k_tool.sh update rules" >>/etc/crontabs/root
 fi
