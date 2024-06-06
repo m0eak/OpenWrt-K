@@ -96,16 +96,17 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^dnsmasq")" -ne '0' ];then
   uci commit dhcp
   /etc/init.d/dnsmasq restart
 fi
-if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-openclash")" -ne '0' ] && [ "$(uci show openclash|grep -c ".port='5335'")" -ne '8' ];then
+if [ "$( opkg list-installed 2>/dev/null | grep -c "^luci-app-openclash")" -ne '0' ] && [ "$( opkg list-installed 2>/dev/null | grep -c "^luci-app-mosdns")" -ne '0' ];then
   if [ "$(grep -c "^直连规则(by 沉默の金)" /usr/share/openclash/res/rule_providers.list)" -eq '0' ];then
       sed -i '1i 直连规则(by 沉默の金),沉默の金,classical,chenmozhijin/OpenWrt-K/main/files/etc/openclash/rule_provider/,DirectRule-chenmozhijin.yaml' "/usr/share/openclash/res/rule_providers.list"
   fi
-  if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-mosdns")" -ne '0' ];then
+  if [ "$( opkg list-installed 2>/dev/null | grep -c "^luci-app-mosdns")" -ne '0' ] && [ "$( uci show openclash | grep -c "5335")" -ne '8' ];then
     n=0
     while [ "$n" -lt $(uci show openclash|grep -c "^openclash.@dns_servers\[[0-9]\{1,10\}\]=dns_servers") ]; do
       uci set openclash.@dns_servers[$n].enabled='0'
       n=$((n + 1))
     done
+    uci set openclash.config.enable_custom_dns='1'
     uci add openclash dns_servers
     uci set openclash.@dns_servers[-1].enabled='1'
     uci set openclash.@dns_servers[-1].group='nameserver'
@@ -118,46 +119,42 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-openclash")" -ne '0
     uci set openclash.@dns_servers[-1].type='udp'
     uci set openclash.@dns_servers[-1].ip='127.0.0.1'
     uci set openclash.@dns_servers[-1].port='5335'
-    uci set openclash.config.enable_custom_dns='1'
     uci add openclash dns_servers
-    uci set openclash.@dns_servers[-2].enabled='1'
-    uci set openclash.@dns_servers[-2].group='nameserver'
-    uci set openclash.@dns_servers[-2].type='tcp'
-    uci set openclash.@dns_servers[-2].ip='127.0.0.1'
-    uci set openclash.@dns_servers[-2].port='5335'
+    uci set openclash.@dns_servers[-1].enabled='1'
+    uci set openclash.@dns_servers[-1].group='nameserver'
+    uci set openclash.@dns_servers[-1].type='tcp'
+    uci set openclash.@dns_servers[-1].ip='127.0.0.1'
+    uci set openclash.@dns_servers[-1].port='5335'
     uci add openclash dns_servers
-    uci set openclash.@dns_servers[-2].enabled='1'
-    uci set openclash.@dns_servers[-2].group='fallback'
-    uci set openclash.@dns_servers[-2].type='tcp'
-    uci set openclash.@dns_servers[-2].ip='127.0.0.1'
-    uci set openclash.@dns_servers[-2].port='5335'
-    uci set openclash.config.enable_custom_dns='1'
+    uci set openclash.@dns_servers[-1].enabled='1'
+    uci set openclash.@dns_servers[-1].group='fallback'
+    uci set openclash.@dns_servers[-1].type='tcp'
+    uci set openclash.@dns_servers[-1].ip='127.0.0.1'
+    uci set openclash.@dns_servers[-1].port='5335'
     uci add openclash dns_servers
-    uci set openclash.@dns_servers[-3].enabled='1'
-    uci set openclash.@dns_servers[-3].group='nameserver'
-    uci set openclash.@dns_servers[-3].type='tls'
-    uci set openclash.@dns_servers[-3].ip='127.0.0.1'
-    uci set openclash.@dns_servers[-3].port='5335'
+    uci set openclash.@dns_servers[-1].enabled='1'
+    uci set openclash.@dns_servers[-1].group='nameserver'
+    uci set openclash.@dns_servers[-1].type='tls'
+    uci set openclash.@dns_servers[-1].ip='127.0.0.1'
+    uci set openclash.@dns_servers[-1].port='5335'
     uci add openclash dns_servers
-    uci set openclash.@dns_servers[-3].enabled='1'
-    uci set openclash.@dns_servers[-3].group='fallback'
-    uci set openclash.@dns_servers[-3].type='tls'
-    uci set openclash.@dns_servers[-3].ip='127.0.0.1'
-    uci set openclash.@dns_servers[-3].port='5335'
-    uci set openclash.config.enable_custom_dns='1'
+    uci set openclash.@dns_servers[-1].enabled='1'
+    uci set openclash.@dns_servers[-1].group='fallback'
+    uci set openclash.@dns_servers[-1].type='tls'
+    uci set openclash.@dns_servers[-1].ip='127.0.0.1'
+    uci set openclash.@dns_servers[-1].port='5335'
     uci add openclash dns_servers
-    uci set openclash.@dns_servers[-4].enabled='1'
-    uci set openclash.@dns_servers[-4].group='nameserver'
-    uci set openclash.@dns_servers[-4].type='https'
-    uci set openclash.@dns_servers[-4].ip='127.0.0.1'
-    uci set openclash.@dns_servers[-4].port='5335'
+    uci set openclash.@dns_servers[-1].enabled='1'
+    uci set openclash.@dns_servers[-1].group='nameserver'
+    uci set openclash.@dns_servers[-1].type='https'
+    uci set openclash.@dns_servers[-1].ip='127.0.0.1'
+    uci set openclash.@dns_servers[-1].port='5335'
     uci add openclash dns_servers
-    uci set openclash.@dns_servers[-4].enabled='1'
-    uci set openclash.@dns_servers[-4].group='fallback'
-    uci set openclash.@dns_servers[-4].type='https'
-    uci set openclash.@dns_servers[-4].ip='127.0.0.1'
-    uci set openclash.@dns_servers[-4].port='5335'
-    uci set openclash.config.enable_custom_dns='1'
+    uci set openclash.@dns_servers[-1].enabled='1'
+    uci set openclash.@dns_servers[-1].group='fallback'
+    uci set openclash.@dns_servers[-1].type='https'
+    uci set openclash.@dns_servers[-1].ip='127.0.0.1'
+    uci set openclash.@dns_servers[-1].port='5335'
   fi
   uci set openclash.config.enable_redirect_dns='1'
   uci set openclash.config.operation_mode='fake-ip'
