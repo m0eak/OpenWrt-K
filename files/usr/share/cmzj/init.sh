@@ -193,11 +193,11 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-openclash")" -ne '0
   uci set openclash.@rule_provider_config[-1].config='all'
   uci set openclash.@rule_provider_config[-1].group='DIRECT'
   uci set openclash.@rule_provider_config[-1].position='0'
-  uci set openclash.@rule_provider_config[0].name='Custom-Rules-Direct'
-  uci set openclash.@rule_provider_config[0].type='http'
-  uci set openclash.@rule_provider_config[0].behavior='domain'
-  uci set openclash.@rule_provider_config[0].format='text'
-  uci set openclash.@rule_provider_config[0].url='https://raw.githubusercontent.com/m0eak/clash-rules/main/rule-provider/direct.txt'
+  uci set openclash.@rule_provider_config[-1].name='Custom-Rules-Direct'
+  uci set openclash.@rule_provider_config[-1].type='http'
+  uci set openclash.@rule_provider_config[-1].behavior='domain'
+  uci set openclash.@rule_provider_config[-1].format='text'
+  uci set openclash.@rule_provider_config[-1].url='https://raw.githubusercontent.com/m0eak/clash-rules/main/rule-provider/direct.txt'
   uci commit openclash
 fi
 if [ "$( opkg list-installed 2>/dev/null| grep -c "^smartdns")" -ne '0' ] && [ ! "$(uci -q get smartdns.@server[0].name)" = "清华大学TUNA协会" ];then
