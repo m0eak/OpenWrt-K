@@ -190,6 +190,22 @@ if [ "$( opkg list-installed 2>/dev/null | grep -c "^luci-app-openclash")" -ne '
   uci set openclash.config.ipv6_mode='2'
   uci set openclash.config.enable_v6_udp_proxy='1'
   uci set openclash.config.china_ip6_route='1'
+  if [ "$( uci show openclash| grep -c "直连规则(by 沉默の金)")" -ne '1' ];then
+    uci add openclash rule_provider_config
+    uci set openclash.@rule_provider_config[-1].enabled='1'
+    uci set openclash.@rule_provider_config[-1].interval='86400'
+    uci set openclash.@rule_provider_config[-1].config='all'
+    uci set openclash.@rule_provider_config[-1].group='DIRECT'
+    uci set openclash.@rule_provider_config[-1].position='0'
+    uci add_list openclash.@rule_provider_config[-1].rule_name='直连规则(by 沉默の金)'
+    uci add_list openclash.@rule_provider_config[-1].rule_name='国内IP白名单'
+    uci add_list openclash.@rule_provider_config[-1].rule_name='国内域名白名单'
+    uci add openclash rule_provider_config
+    uci set openclash.@rule_provider_config[-1].enabled='1'
+    uci set openclash.@rule_provider_config[-1].interval='86400'
+    uci set openclash.@rule_provider_config[-1].config='all'
+    uci add_list openclash.@rule_provider_config[-1].rule_name='代理规则(by 沉默の金)'
+  fi
   if [ "$( uci show openclash| grep -c "/m0eak/clash-rules/main/rule-provider/direct.txt")" -eq '0' ];then
     uci add openclash rule_providers
     uci set openclash.@rule_providers[-1]=rule_providers
