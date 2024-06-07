@@ -65,7 +65,7 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^luci-app-tailscale")" -ne '0
   uci set firewall.tszone.forward='ACCEPT'
   uci commit firewall
 fi
-if [ "$( opkg list-installed 2>/dev/null| grep -c "^mosdns")" -ne '0' ];then
+if [ "$( opkg list-installed 2>/dev/null| grep -c "^mosdns")" -ne '0' ] && ["$(grep -c "mosdns" /etc/openwrt-k_info)" -eq '1'];then
   uci set mosdns.config.enabled='1'
   uci set mosdns.config.redirect='0'
   uci set mosdns.config.custom_local_dns='1'
@@ -80,6 +80,8 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^mosdns")" -ne '0' ];then
   uci add_list mosdns.config.remote_dns='https://dns.quad9.net/dns-query'
   uci commit mosdns
   /etc/init.d/mosdns restart
+  uci set smartdns.@server[0].enabled='0'
+  uci commit smartdns
 fi
 if [ "$( opkg list-installed 2>/dev/null| grep -c "^aria2")" -ne '0' ];then
   uci set aria2.main.user='root'
@@ -96,7 +98,7 @@ if [ "$( opkg list-installed 2>/dev/null| grep -c "^dnsmasq")" -ne '0' ];then
   uci commit dhcp
   /etc/init.d/dnsmasq restart
 fi
-if [ "$( opkg list-installed 2>/dev/null | grep -c "^luci-app-openclash")" -ne '0' ] && [ "$( opkg list-installed 2>/dev/null | grep -c "^luci-app-mosdns")" -ne '0' ];then
+if [ "$( opkg list-installed 2>/dev/null | grep -c "^luci-app-openclash")" -ne '0' ] && [ "$( opkg list-installed 2>/dev/null | grep -c "^luci-app-mosdns")" -ne '0' ] && ["$(grep -c "mosdns" /etc/openwrt-k_info)" -eq '1'];then
   if [ "$(grep -c "^代理规则(by 沉默の金)" /usr/share/openclash/res/rule_providers.list)" -eq '0' ];then
       sed -i '1i 代理规则(by 沉默の金),沉默の金,classical,chenmozhijin/OpenWrt-K/main/files/etc/openclash/rule_provider/,ProxyRule-chenmozhijin.yaml' "/usr/share/openclash/res/rule_providers.list"
   fi
@@ -222,7 +224,7 @@ if [ "$( opkg list-installed 2>/dev/null | grep -c "^luci-app-openclash")" -ne '
   fi
   uci commit openclash
 fi
-if [ "$( opkg list-installed 2>/dev/null| grep -c "^smartdns")" -ne '0' ] && [ ! "$(uci -q get smartdns.@server[0].name)" = "清华大学TUNA协会" ];then
+if [ "$( opkg list-installed 2>/dev/null| grep -c "^smartdns")" -ne '0' ] && [ ! "$(uci -q get smartdns.@server[0].name)" = "清华大学TUNA协会" ] && ["$(grep -c "smartdns" /etc/openwrt-k_info)" -eq '1'];then
   uci set smartdns.@smartdns[0].prefetch_domain='1'
   uci set smartdns.@smartdns[0].port='6053'
   uci set smartdns.@smartdns[0].seconddns_port='5335'
