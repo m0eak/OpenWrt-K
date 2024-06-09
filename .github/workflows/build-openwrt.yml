@@ -42,6 +42,11 @@ on:
 #              - 'files/**'
 #              - '!README.md'
   workflow_dispatch:
+    inputs:
+      dns:
+        description: 'DNS分流(mosdns或smartdns)'
+        required: true
+        default: 'mosdns'
 permissions:
   actions: write
   contents: write
@@ -388,8 +393,15 @@ jobs:
           echo "RELEASE_NAME=\"OpenWrt-K_V${{ needs.planning.outputs.starttime }} (${{ matrix.target }}-${{ matrix.subtarget }})-[$OPENWRT_TAG_BRANCH]\"" >> $OPENWRT_ROOT_PATH/files/etc/openwrt-k_info
           echo "RELEASE_TAG_NAME=\"v${{ needs.planning.outputs.starttime }}(${{ matrix.target }}-${{ matrix.subtarget }})-($OPENWRT_TAG_BRANCH)\""  >> $OPENWRT_ROOT_PATH/files/etc/openwrt-k_info
           echo "REPOSITORY_URL=\"https://github.com/${{ github.repository }}\"" >> $OPENWRT_ROOT_PATH/files/etc/openwrt-k_info
+          if [[ ${{ github.event.inputs.dns }} == 'mosdns' ]]; then
+             echo "DNS="mosdns"" >> $OPENWRT_ROOT_PATH/files/etc/openwrt-k_info
+          fi
+          if [[ ${{ github.event.inputs.dns }} == 'smartdns' ]]; then
+             echo "DNS="smartdns"" >> $OPENWRT_ROOT_PATH/files/etc/openwrt-k_info
+          fi
           echo "$OPENWRT_ROOT_PATH/files/etc/openwrt-k_info"
           cat $OPENWRT_ROOT_PATH/files/etc/openwrt-k_info
+
 
       - name: 加载自定义配置并生成配置文件
         working-directory: ${{ env.OPENWRT_ROOT_PATH }}
