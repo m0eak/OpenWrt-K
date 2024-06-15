@@ -7,8 +7,10 @@ openwrt_tag_branch_v=$(sed -n '/openwrt_tag\/branch/p' $GITHUB_WORKSPACE/config/
 echo "缝合immortalwrt-luci......"
 TARGET_LUCI="https://git.openwrt.org/project/luci.git"
 TARGET_PACKAGE="https://git.openwrt.org/feed/packages.git"
-NEW_LUCI="src-git luci https://github.com/immortalwrt/luci.git^7ce5799365f2ba329825a169b507718359303191"
-NEW_PACKAGE="src-git packages https://github.com/immortalwrt/packages.git^fc5c6d19bc1e63affa36dc2d9107873469f96311"
+NEW_LUCI="src-git luci https://github.com/immortalwrt/luci.git;openwrt-23.05"
+NEW_PACKAGE="src-git packages https://github.com/immortalwrt/packages.git;openwrt-23.05"
+# NEW_LUCI="src-git luci https://github.com/immortalwrt/luci.git^7ce5799365f2ba329825a169b507718359303191"
+# NEW_PACKAGE="src-git packages https://github.com/immortalwrt/packages.git^fc5c6d19bc1e63affa36dc2d9107873469f96311"
 sed -i "s|.*$TARGET_LUCI.*|$NEW_LUCI|" "$OPENWRT_ROOT_PATH/feeds.conf.default" && sed -i "s|.*$TARGET_PACKAGE.*|$NEW_PACKAGE|" "$OPENWRT_ROOT_PATH/feeds.conf.default" && echo "替换完成"
 $OPENWRT_ROOT_PATH/scripts/feeds update -a
 $OPENWRT_ROOT_PATH/scripts/feeds install -a
@@ -57,8 +59,8 @@ if [[ "$openwrt_tag_branch" == "v23.05.2" ]] ; then
     curl -s -L --retry 6 https://github.com/openwrt/packages/commit/cea45c75c0153a190ee41dedaf6526ae08e33928.patch  | patch -p1 -d feeds/packages 2>/dev/null
   fi
 fi
-if [[ "$openwrt_tag_branch" == "v23.05.3" ]] || [[ "$openwrt_tag_branch" == "openwrt-23.05" ]] ; then
-  echo "修复libpfring"
-  curl -s -L --retry 6 https://github.com/openwrt/packages/commit/534bd518f3fff6c31656a1edcd7e10922f3e06e5.patch  | patch -p1 -d feeds/packages 2>/dev/null || true
-  curl -s -L --retry 6 https://github.com/openwrt/packages/commit/c3a50a9fac8f9d8665f8b012abd85bb9e461e865.patch  | patch -p1 -d feeds/packages 2>/dev/null || true
-fi
+# if [[ "$openwrt_tag_branch" == "v23.05.3" ]] || [[ "$openwrt_tag_branch" == "openwrt-23.05" ]] ; then
+#   echo "修复libpfring"
+#   curl -s -L --retry 6 https://github.com/openwrt/packages/commit/534bd518f3fff6c31656a1edcd7e10922f3e06e5.patch  | patch -p1 -d feeds/packages 2>/dev/null || true
+#   curl -s -L --retry 6 https://github.com/openwrt/packages/commit/c3a50a9fac8f9d8665f8b012abd85bb9e461e865.patch  | patch -p1 -d feeds/packages 2>/dev/null || true
+# fi
