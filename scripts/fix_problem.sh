@@ -9,7 +9,7 @@ TARGET_LUCI="https://git.openwrt.org/project/luci.git"
 TARGET_PACKAGE="https://git.openwrt.org/feed/packages.git"
 NEW_LUCI="src-git luci https://github.com/immortalwrt/luci.git^7ce5799365f2ba329825a169b507718359303191"
 NEW_PACKAGE="src-git packages https://github.com/immortalwrt/packages.git"
-sed -i "s|.*$TARGET_LUCI.*|$NEW_LUCI|" "$OPENWRT_ROOT_PATH/feeds.conf.default" && echo "替换完成"
+sed -i "s|.*$TARGET_LUCI.*|$NEW_LUCI|" "$OPENWRT_ROOT_PATH/feeds.conf.default" && sed -i "s|.*$TARGET_PACKAGE.*|$NEW_PACKAGE|" "$OPENWRT_ROOT_PATH/feeds.conf.default" && echo "替换完成"
 $OPENWRT_ROOT_PATH/scripts/feeds update -a
 $OPENWRT_ROOT_PATH/scripts/feeds install -a
 
