@@ -2,9 +2,23 @@
 config=$1
 openwrt_tag_branch=$(sed -n '/openwrt_tag\/branch/p' $GITHUB_WORKSPACE/config/"$config"/OpenWrt-K/compile.config | sed -e 's/.*=//')
 openwrt_tag_branch_v=$(sed -n '/openwrt_tag\/branch/p' $GITHUB_WORKSPACE/config/"$config"/OpenWrt-K/compile.config | sed -e 's/.*=v//')
+
+# 缝合immortalwrt luci
+echo "缝合immortalwrt-luci......"
+TARGET_LUCI="https://git.openwrt.org/project/luci.git"
+TARGET_PACKAGE="https://git.openwrt.org/feed/packages.git"
+NEW_LUCI="src-git luci https://git.openwrt.org/project/luci.git;openwrt-23.05"
+NEW_PACKAGE="src-git packages https://git.openwrt.org/feed/packages.git;openwrt-23.05"
+# NEW_LUCI="src-git luci https://github.com/immortalwrt/luci.git^7ce5799365f2ba329825a169b507718359303191"
+# NEW_PACKAGE="src-git packages https://github.com/immortalwrt/packages.git^fc5c6d19bc1e63affa36dc2d9107873469f96311"
+sed -i "s|.*$TARGET_LUCI.*|$NEW_LUCI|" "$OPENWRT_ROOT_PATH/feeds.conf.default" && sed -i "s|.*$TARGET_PACKAGE.*|$NEW_PACKAGE|" "$OPENWRT_ROOT_PATH/feeds.conf.default" && echo "替换完成"
+$OPENWRT_ROOT_PATH/scripts/feeds update -a
+$OPENWRT_ROOT_PATH/scripts/feeds install -a
+
 sed -i 's/^  DEPENDS:= +kmod-crypto-manager +kmod-crypto-pcbc +kmod-crypto-fcrypt$/  DEPENDS:= +kmod-crypto-manager +kmod-crypto-pcbc +kmod-crypto-fcrypt +kmod-udptunnel4 +kmod-udptunnel6/' package/kernel/linux/modules/netsupport.mk #https://github.com/openwrt/openwrt/commit/ecc53240945c95bc77663b79ccae6e2bd046c9c8
 sed -i 's/^	dnsmasq \\$/	dnsmasq-full \\/g' ./include/target.mk
 sed -i 's/^	b43-fwsquash.py "$(CONFIG_B43_FW_SQUASH_PHYTYPES)" "$(CONFIG_B43_FW_SQUASH_COREREVS)"/	$(TOPDIR)\/tools\/b43-tools\/files\/b43-fwsquash.py "$(CONFIG_B43_FW_SQUASH_PHYTYPES)" "$(CONFIG_B43_FW_SQUASH_COREREVS)"/' ./package/kernel/mac80211/broadcom.mk
+
 # Tailscale
 [ -e "$OPENWRT_ROOT_PATH/feeds/packages/net/tailscale/Makefile" ] && sed -i '/\/etc\/init\.d\/tailscale/d;/\/etc\/config\/tailscale/d;' feeds/packages/net/tailscale/Makefile && echo "Tailscale修复完成"
 # 固定Vermagic
@@ -45,8 +59,8 @@ if [[ "$openwrt_tag_branch" == "v23.05.2" ]] ; then
     curl -s -L --retry 6 https://github.com/openwrt/packages/commit/cea45c75c0153a190ee41dedaf6526ae08e33928.patch  | patch -p1 -d feeds/packages 2>/dev/null
   fi
 fi
-if [[ "$openwrt_tag_branch" == "v23.05.3" ]] || [[ "$openwrt_tag_branch" == "openwrt-23.05" ]] ; then
-  echo "修复libpfring"
-  curl -s -L --retry 6 https://github.com/openwrt/packages/commit/534bd518f3fff6c31656a1edcd7e10922f3e06e5.patch  | patch -p1 -d feeds/packages 2>/dev/null
-  curl -s -L --retry 6 https://github.com/openwrt/packages/commit/c3a50a9fac8f9d8665f8b012abd85bb9e461e865.patch  | patch -p1 -d feeds/packages 2>/dev/null
-fi
+# if [[ "$openwrt_tag_branch" == "v23.05.3" ]] || [[ "$openwrt_tag_branch" == "openwrt-23.05" ]] ; then
+#   echo "修复libpfring"
+#   curl -s -L --retry 6 https://github.com/openwrt/packages/commit/534bd518f3fff6c31656a1edcd7e10922f3e06e5.patch  | patch -p1 -d feeds/packages 2>/dev/null || true
+#   curl -s -L --retry 6 https://github.com/openwrt/packages/commit/c3a50a9fac8f9d8665f8b012abd85bb9e461e865.patch  | patch -p1 -d feeds/packages 2>/dev/null || true
+# fi
